@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  background: #000000;
+  color: #E8EEFF;
+  height: 100%;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #2D3F5A; }
+
+@keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1);} 50% { opacity:0.35; transform:scale(1.4);} }
+@keyframes spin { from { transform:rotate(0deg);} to { transform:rotate(360deg);} }
+@keyframes sweep { 0% { transform: translateX(-100%);} 100% { transform: translateX(220%);} }
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px);} to { opacity:1; transform:translateY(0);} }

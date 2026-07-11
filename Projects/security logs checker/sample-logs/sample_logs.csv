@@ -1,0 +1,21 @@
+timestamp,source_ip,dest_ip,user,event_type,status,port,message
+2026-07-09T01:10:00Z,10.0.2.14,prod-web-01,jsmith,login,success,443,User jsmith authenticated successfully
+2026-07-09T01:12:00Z,10.0.2.31,prod-db-01,amehta,file_access,success,445,amehta accessed /shared/reports
+2026-07-09T01:15:00Z,203.0.113.55,prod-db-01,svc_backup,login,failed,22,Authentication failed: invalid password for svc_backup
+2026-07-09T01:15:40Z,203.0.113.55,prod-db-01,svc_backup,login,failed,22,Authentication failed: invalid password for svc_backup
+2026-07-09T01:16:20Z,203.0.113.55,prod-db-01,svc_backup,login,failed,22,Authentication failed: invalid password for svc_backup
+2026-07-09T01:17:00Z,203.0.113.55,prod-db-01,svc_backup,login,failed,22,Authentication failed: invalid password for svc_backup
+2026-07-09T01:17:40Z,203.0.113.55,prod-db-01,svc_backup,login,failed,22,Authentication failed: invalid password for svc_backup
+2026-07-09T01:18:10Z,203.0.113.55,prod-db-01,svc_backup,login,success,22,User svc_backup authenticated successfully
+2026-07-09T01:20:00Z,198.51.100.23,10.0.0.5,unknown,firewall,deny,21,Connection attempt blocked
+2026-07-09T01:20:15Z,198.51.100.23,10.0.0.5,unknown,firewall,deny,22,Connection attempt blocked
+2026-07-09T01:20:30Z,198.51.100.23,10.0.0.5,unknown,firewall,deny,23,Connection attempt blocked
+2026-07-09T01:20:45Z,198.51.100.23,10.0.0.5,unknown,firewall,deny,25,Connection attempt blocked
+2026-07-09T01:21:00Z,198.51.100.23,10.0.0.5,unknown,firewall,deny,80,Connection attempt blocked
+2026-07-09T01:21:15Z,198.51.100.23,10.0.0.5,unknown,firewall,deny,443,Connection attempt blocked
+2026-07-09T01:21:30Z,198.51.100.23,10.0.0.5,unknown,firewall,deny,3306,Connection attempt blocked
+2026-07-09T01:21:45Z,198.51.100.23,10.0.0.5,unknown,firewall,deny,3389,Connection attempt blocked
+2026-07-09T01:25:00Z,10.0.2.14,prod-db-01,jsmith,privilege_change,success,22,User jsmith executed sudo su - to gain root privileges on prod-db-01
+2026-07-09T01:30:00Z,10.0.3.9,fin-ws-02,kwong,process_execution,success,445,powershell.exe -enc JABzAGUAYwB1AHIAaQB0AHkA launched downloading payload from external host
+2026-07-09T03:14:00Z,45.33.12.9,prod-web-01,admin,login,success,22,User admin authenticated successfully from new geolocation
+2026-07-09T04:00:00Z,10.0.2.31,203.0.113.201,dnair,file_transfer,success,21,Large outbound file transfer initiated to external host
