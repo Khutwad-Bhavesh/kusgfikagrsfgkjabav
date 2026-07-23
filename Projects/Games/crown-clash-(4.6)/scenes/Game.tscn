@@ -1,0 +1,134 @@
+[gd_scene format=3 uid="uid://bgy8pam4jmr6a"]
+
+[ext_resource type="Script" uid="uid://daeh7ikangibn" path="res://scripts/MazeGenerator.gd" id="1_cpr0p"]
+[ext_resource type="Texture2D" uid="uid://cdjrkp0qw25oa" path="res://assets/game/tile.png" id="2_cpr0p"]
+[ext_resource type="Script" uid="uid://dejk1pko0kl2e" path="res://scripts/GameManager.gd" id="3_cpr0p"]
+[ext_resource type="FontFile" uid="uid://dxx2kifvtb3w6" path="res://assets/game/GalaferaMedium-V4xze.ttf" id="4_78awf"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_78awf"]
+texture = ExtResource("2_cpr0p")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+1:0/0 = 0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+5:3/0 = 0
+6:3/0 = 0
+7:3/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_s0nni"]
+tile_size = Vector2i(64, 64)
+physics_layer_0/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_78awf")
+
+[node name="Game" type="Node2D" unique_id=1034930461]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1869044249]
+position = Vector2(574, 321)
+process_callback = 0
+position_smoothing_enabled = true
+
+[node name="MazeGenerator" type="Node2D" parent="." unique_id=2123414042]
+position = Vector2(0, 14)
+script = ExtResource("1_cpr0p")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="MazeGenerator" unique_id=624798037]
+tile_set = SubResource("TileSet_s0nni")
+physics_quadrant_size = 64
+
+[node name="GameManager" type="Node" parent="." unique_id=1108323088]
+script = ExtResource("3_cpr0p")
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1025912547]
+
+[node name="CountdownLabel" type="Label" parent="UI" unique_id=569408425]
+z_index = 10
+custom_minimum_size = Vector2(0, -100)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_top = -11.5
+offset_right = 0.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.84313726, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("4_78awf")
+theme_override_font_sizes/font_size = 96
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RoundLabel" type="Label" parent="UI" unique_id=861856256]
+z_index = 10
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -59.0
+offset_right = 59.0
+offset_bottom = 39.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 28
+text = "Round  1"
+
+[node name="TimerLabel" type="Label" parent="UI" unique_id=229024031]
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 36
+text = "60s"
+
+[node name="NotificationLabel" type="Label" parent="UI" unique_id=1557472162]
+anchors_preset = -1
+anchor_top = 0.28
+anchor_bottom = 0.28
+offset_left = 3.0
+offset_top = -101.44
+offset_right = 43.0
+offset_bottom = -78.44
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 3
+
+[node name="WinnerLabel" type="Label" parent="UI" unique_id=451792982]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 64
