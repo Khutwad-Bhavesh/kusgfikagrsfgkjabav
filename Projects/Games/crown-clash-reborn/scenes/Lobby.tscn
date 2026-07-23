@@ -1,0 +1,185 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/Lobby.gd" id="1_lobby"]
+
+[node name="Lobby" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lobby")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0392157, 0.0392157, 0.101961, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 450.0
+grow_horizontal = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="LeftPanel" type="PanelContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LeftPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="HBoxContainer/LeftPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "PLAYERS"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/LeftPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PlayerList" type="VBoxContainer" parent="HBoxContainer/LeftPanel/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="RightPanel" type="PanelContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/RightPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="HBoxContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "ADMIN SETTINGS"
+horizontal_alignment = 1
+
+[node name="LabelMax" type="Label" parent="HBoxContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+text = "Max Players"
+
+[node name="MaxPlayersSpin" type="SpinBox" parent="HBoxContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+min_value = 2.0
+max_value = 10.0
+value = 6.0
+
+[node name="LabelWidth" type="Label" parent="HBoxContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+text = "Maze Width (Tiles)"
+
+[node name="MazeWidthSpin" type="SpinBox" parent="HBoxContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+min_value = 10.0
+max_value = 50.0
+value = 20.0
+
+[node name="LabelHeight" type="Label" parent="HBoxContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+text = "Maze Height (Tiles)"
+
+[node name="MazeHeightSpin" type="SpinBox" parent="HBoxContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+min_value = 10.0
+max_value = 50.0
+value = 20.0
+
+[node name="LabelTime" type="Label" parent="HBoxContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+text = "Round Time (Seconds)"
+
+[node name="RoundTimeSpin" type="SpinBox" parent="HBoxContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+min_value = 60.0
+max_value = 600.0
+step = 30.0
+value = 180.0
+
+[node name="LabelWin" type="Label" parent="HBoxContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+text = "Victory Point Threshold"
+
+[node name="WinPointsSpin" type="SpinBox" parent="HBoxContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+min_value = 5.0
+max_value = 100.0
+step = 5.0
+value = 15.0
+
+[node name="LabelPoints" type="Label" parent="HBoxContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+text = "Points Per Escape (Comma separated)"
+
+[node name="PointsTableInput" type="LineEdit" parent="HBoxContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+text = "5,4,3,2,1"
+
+[node name="ApplySettingsButton" type="Button" parent="HBoxContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+text = "Apply Settings"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -250.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+
+[node name="Label" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+text = "SELECT CHARACTER"
+horizontal_alignment = 1
+
+[node name="CharSelectContainer" type="HBoxContainer" parent="VBoxContainer2"]
+layout_mode = 2
+alignment = 1
+
+[node name="Footer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -80.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="StatusLabel" type="Label" parent="Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_alignment = 1
+
+[node name="ReadyButton" type="Button" parent="Footer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Ready"
+
+[node name="StartButton" type="Button" parent="Footer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Start Game"
+
+[node name="LeaveButton" type="Button" parent="Footer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Leave"
