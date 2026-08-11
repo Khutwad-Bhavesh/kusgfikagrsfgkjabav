@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Install Onizuka OS
+GenericName=System Installer
+Comment=Install Onizuka OS to hard disk or virtual machine
+Exec=konsole -e archinstall
+Icon=system-software-install
+Terminal=false
+Categories=System;Installer;
