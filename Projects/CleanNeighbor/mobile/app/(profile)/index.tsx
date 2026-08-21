@@ -11,7 +11,7 @@ import {
   Image
 } from 'react-native'
 import { useUser, useAuth } from '@clerk/clerk-expo'
-import { useDatabaseQuery, useDatabaseDoc, useDatabaseMutation } from "../hooks/useDatabase";
+import { useDatabaseQuery, useDatabaseDoc, useDatabaseMutation } from "../../hooks/useDatabase";
 import { Ionicons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'

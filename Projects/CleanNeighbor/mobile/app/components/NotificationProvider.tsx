@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useUser } from '@clerk/clerk-expo';
-import { useDatabaseQuery, useDatabaseDoc, useDatabaseMutation } from "../hooks/useDatabase";
+import { useDatabaseQuery, useDatabaseDoc, useDatabaseMutation } from "../../hooks/useDatabase";
 
 import { useNotifications, NotificationHelpers } from '../../hooks/useNotifications';
 

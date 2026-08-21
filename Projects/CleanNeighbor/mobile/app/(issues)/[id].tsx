@@ -16,7 +16,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useUser } from "@clerk/clerk-expo";
-import { useDatabaseQuery, useDatabaseDoc, useDatabaseMutation } from "../hooks/useDatabase";
+import { useDatabaseQuery, useDatabaseDoc, useDatabaseMutation } from "../../hooks/useDatabase";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -95,9 +95,7 @@ export default function IssueDetailPage() {
     user ? { clerkId: user.id } : "skip"
   );
 
-  const issue = useDatabaseDoc('wasteReports',
-    id ? { issueId: id as any } : "skip"
-  );
+  const issue = useDatabaseDoc('wasteReports', id ? (id as string) : "skip");
 
   const addComment = useDatabaseMutation('wasteReports');
   const toggleUpvote = useDatabaseMutation('wasteReports');
@@ -347,7 +345,7 @@ export default function IssueDetailPage() {
                         <Ionicons name="videocam" size={14} color="white" />
                       </View>
                     </View>
-                  ))}}
+                  ))}
                 </ScrollView>
               </View>
             )}

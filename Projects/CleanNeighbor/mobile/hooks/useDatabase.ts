@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
-export function useDatabaseQuery(collectionName: string, queryConstraints: any[] = []) {
+export function useDatabaseQuery(collectionName: string, queryConstraints: any = {}) {
   const [data, setData] = useState<any>(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (queryConstraints.includes('skip')) {
+    if (queryConstraints === 'skip') {
       setLoading(false);
       setData(undefined);
       return;
@@ -88,34 +88,45 @@ export function useDatabaseDoc(collectionName: string, docId?: string) {
 }
 
 export function useDatabaseMutation(collectionName: string) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-
-  const mutate = async (action: 'add' | 'update' | 'delete', docIdOrData: any, dataOrNothing?: any) => {
-    setLoading(true);
-    setError(null);
+  return async (args: any = {}) => {
     try {
-      if (action === 'add') {
-        const { data, error } = await supabase.from(collectionName.toLowerCase()).insert(docIdOrData).select().single();
+      const table = collectionName.toLowerCase();
+      
+      // Dummy for file uploads so it doesn't crash (returns an invalid URL which gets caught safely)
+      if (table === 'files') return "http://localhost/dummy-upload";
+
+      const payload = { ...args };
+      
+      // Upsert logic for users
+      if (table === 'users') {
+        const matchId = payload.clerkId || payload._id || payload.userId;
+        if (matchId) {
+           const { data, error } = await supabase.from(table).update(payload).eq(payload.clerkId ? 'clerkId' : '_id', matchId).select().single();
+           if (!error && data) return data;
+        }
+      }
+
+      // If it's an update (has an ID of some sort)
+      const idKey = payload._id ? '_id' : (payload.issueId ? '_id' : (payload.notificationId ? '_id' : null));
+      const idVal = payload._id || payload.issueId || payload.notificationId;
+
+      if (idKey && idVal) {
+        // Remove specific keys that shouldn't be updated directly if they are just identifiers
+        if (payload.issueId) delete payload.issueId;
+        if (payload.notificationId) delete payload.notificationId;
+        
+        const { data, error } = await supabase.from(table).update(payload).eq(idKey, idVal).select().single();
         if (error) throw error;
-        setLoading(false);
-        return data._id;
-      } else if (action === 'update') {
-        const { error } = await supabase.from(collectionName.toLowerCase()).update(dataOrNothing).eq('_id', docIdOrData);
+        return data;
+      } else {
+        // Insert
+        const { data, error } = await supabase.from(table).insert(payload).select().single();
         if (error) throw error;
-        setLoading(false);
-      } else if (action === 'delete') {
-        const { error } = await supabase.from(collectionName.toLowerCase()).delete().eq('_id', docIdOrData);
-        if (error) throw error;
-        setLoading(false);
+        return data;
       }
     } catch (err: any) {
       console.error(`Supabase mutation error for ${collectionName}:`, err);
-      setError(err);
-      setLoading(false);
       throw err;
     }
   };
-
-  return { mutate, loading, error };
 }

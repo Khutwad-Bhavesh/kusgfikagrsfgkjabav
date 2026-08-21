@@ -11,7 +11,6 @@ import SyncUser from './components/SyncUser';
 
 // Safely get environment variables with proper error handling
 const clerkKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY || Constants.expoConfig?.extra?.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
-const clerkKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY || Constants.expoConfig?.extra?.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 // Validate required environment variables
 if (!clerkKey) {

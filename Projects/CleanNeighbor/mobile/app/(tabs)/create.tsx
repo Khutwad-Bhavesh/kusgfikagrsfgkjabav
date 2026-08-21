@@ -16,7 +16,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useUser } from "@clerk/clerk-expo";
-import { useDatabaseQuery, useDatabaseDoc, useDatabaseMutation } from "../hooks/useDatabase";
+import { useDatabaseQuery, useDatabaseDoc, useDatabaseMutation } from "../../hooks/useDatabase";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";

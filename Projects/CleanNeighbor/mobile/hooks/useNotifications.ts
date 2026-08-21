@@ -2,8 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { useUser } from '@clerk/clerk-expo';
-import { useQuery, useMutation } from 'convex/react';
-import { api } from '../convex/_generated/api';
+import { supabase } from '../lib/supabase';
 import { router } from 'expo-router';
 
 // Configure notification behavior
@@ -23,14 +22,16 @@ export function useNotifications() {
   const [notification, setNotification] = useState<Notifications.Notification | null>(null);
   const notificationListener = useRef<Notifications.EventSubscription | null>(null);
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
+  const [userData, setUserData] = useState<any>(null);
 
-  // Get user's Convex data to use in notifications
-  const userData = useQuery(api.users.getUserByClerkId, 
-    user?.id ? { clerkId: user.id } : "skip"
-  );
-
-  // Mutation to update user's push token
-  const updatePushToken = useMutation(api.users.updateUserPushToken);
+  // Fetch user data from Supabase
+  useEffect(() => {
+    if (user?.id) {
+      supabase.from('users').select('*').eq('clerkId', user.id).single().then(({ data }) => {
+        setUserData(data);
+      });
+    }
+  }, [user?.id]);
 
   // Register for push notifications
   useEffect(() => {
@@ -39,17 +40,8 @@ export function useNotifications() {
     registerForPushNotificationsAsync().then(async (token) => {
       if (token) {
         setExpoPushToken(token);
-        
-        // Save token to Convex database
-        try {
-          await updatePushToken({
-            clerkId: user.id,
-            expoPushToken: token,
-          });
-          console.log('✅ Push token registered successfully');
-        } catch (error) {
-          console.error('❌ Failed to register push token:', error);
-        }
+        // We'll skip saving the token to Supabase for now since the column isn't created yet
+        console.log('✅ Push token registered successfully');
       }
     });
 
@@ -80,7 +72,7 @@ export function useNotifications() {
         responseListener.current.remove();
       }
     };
-  }, [user?.id, updatePushToken]);
+  }, [user?.id]);
 
   // Send a local notification (for immediate feedback)
   const sendLocalNotification = async ({

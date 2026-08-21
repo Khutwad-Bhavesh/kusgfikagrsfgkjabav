@@ -2,7 +2,7 @@
 
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
-import { useDatabaseQuery, useDatabaseDoc, useDatabaseMutation } from "../hooks/useDatabase";
+import { useDatabaseQuery, useDatabaseDoc, useDatabaseMutation } from "../../hooks/useDatabase";
 import { Redirect, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {

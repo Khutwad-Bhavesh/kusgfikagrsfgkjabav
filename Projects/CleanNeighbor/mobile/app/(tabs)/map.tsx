@@ -7,7 +7,7 @@ import {
   ScrollView,
   Dimensions
 } from 'react-native'
-import { useDatabaseQuery, useDatabaseDoc, useDatabaseMutation } from "../hooks/useDatabase";
+import { useDatabaseQuery, useDatabaseDoc, useDatabaseMutation } from "../../hooks/useDatabase";
 import { Ionicons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
 import { WebView } from 'react-native-webview'
