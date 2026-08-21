@@ -40,7 +40,7 @@ import { toast } from "sonner";
 import Image from "next/image";
 import Link from "next/link";
 import { format, formatDistanceToNow } from 'date-fns';
-import { Id } from "@/convex/_generated/dataModel";
+// Removed Convex Id import
 import { Label } from "@/components/ui/label";
 
 export default function IssueDetailPage() {

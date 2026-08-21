@@ -125,7 +125,7 @@ export default function ReportsPage() {
 
   // Email actions
   const sendReportToAllDepartments = async (...args: any[]) => ({ successfulSends: 1, failedSends: 0, results: [] });
-  const sendReportToDepartment = async (...args: any[]) => ({ success: true, department: "Mock Dept" });
+  const sendReportToDepartment = async (...args: any[]) => ({ success: true, department: "Mock Dept", email: "mock@example.com", error: undefined });
   const sendReportEmail = async (...args: any[]) => ({ success: true });
 
   // Data queries
@@ -251,7 +251,7 @@ export default function ReportsPage() {
           return acc;
         }, {} as Record<string, any>);
 
-        return Object.entries(categoryStats).map(([category, stats]) => ({
+        return Object.entries(categoryStats).map(([category, stats]: [string, any]) => ({
           "Category": category,
           "Total Issues": stats.total,
           "Pending": stats.pending,

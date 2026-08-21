@@ -85,10 +85,10 @@ export default function AnalyticsPage() {
     );
 
     const categoryData = Object.entries(categoryStats)
-      .map(([category, count]) => ({
-        name: category,
-        value: count,
-        percentage: Math.round((count / totalIssues) * 100),
+      .map(([name, stats]: [string, any]) => ({
+        name: name,
+        value: stats,
+        percentage: Math.round((stats / totalIssues) * 100),
       }))
       .sort((a, b) => b.value - a.value);
 
