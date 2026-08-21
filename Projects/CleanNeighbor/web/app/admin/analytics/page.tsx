@@ -159,7 +159,7 @@ export default function AnalyticsPage() {
     // Location stats
     const locationStats = issues.reduce(
       (acc, issue) => {
-        const location = `${issue.location.city}, ${issue.location.district}`;
+        const location = issue.location_address || "Unknown Location";
         acc[location] = (acc[location] || 0) + 1;
         return acc;
       },

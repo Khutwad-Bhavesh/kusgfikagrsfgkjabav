@@ -37,6 +37,7 @@ interface IssueDetectionResult {
   predicted_class?: string;
   confidence?: number;
   is_issue?: boolean;
+  disposal_tutorial?: string;
   probabilities?: {
     issue: number;
     no_issue: number;
@@ -416,6 +417,14 @@ export default class AIAnalysisService {
       return "Unable to analyze the image. Please ensure the image clearly shows a civic issue.";
     }
 
+    if (analysis.predicted_class === 'blocked') {
+      return "Content blocked by safety filters.";
+    }
+
+    if (analysis.disposal_tutorial) {
+      return analysis.disposal_tutorial;
+    }
+
     if (!analysis.is_issue) {
       return "The image doesn't appear to show a civic issue. Please upload an image that clearly shows the problem you want to report.";
     }
@@ -549,16 +558,13 @@ export default class AIAnalysisService {
    */
   mapAICategoryToFormCategory(aiCategory: string): string {
     const categoryMap: Record<string, string> = {
-      road_damage: "Roads",
-      water_issue: "Water Supply",
-      waste_management: "Waste Management",
-      infrastructure: "Infrastructure",
-      lighting: "Street Lighting",
-      drainage: "Drainage",
-      transport: "Public Transport",
-      sanitation: "Sanitation",
-      electricity: "Electricity",
-      parks: "Parks & Recreation",
+      "e-waste": "E-Waste",
+      "plastic": "Recyclable Waste",
+      "glass": "Recyclable Waste",
+      "metal": "Recyclable Waste",
+      "paper": "Recyclable Waste",
+      "cardboard": "Recyclable Waste",
+      "trash": "Mixed Waste",
     };
 
     return categoryMap[aiCategory.toLowerCase()] || "Other";

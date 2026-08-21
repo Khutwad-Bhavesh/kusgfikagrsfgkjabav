@@ -8,9 +8,11 @@ import createTokenCache from '@/utils/tokenCache';
 import ErrorBoundary from './components/ErrorBoundary';
 import React, { useEffect } from 'react';
 import SyncUser from './components/SyncUser';
+import { Platform } from 'react-native';
 
 // Safely get environment variables with proper error handling
 const clerkKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY || Constants.expoConfig?.extra?.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+const tokenCache = createTokenCache();
 
 // Validate required environment variables
 if (!clerkKey) {
@@ -34,7 +36,7 @@ export default function RootLayout() {
     <ErrorBoundary>
       <ClerkProvider 
         publishableKey={clerkKey}
-        tokenCache={createTokenCache()}
+        tokenCache={tokenCache}
       >
         <SafeAreaProvider>
           <ErrorBoundary>

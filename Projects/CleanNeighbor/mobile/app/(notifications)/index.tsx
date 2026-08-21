@@ -332,7 +332,7 @@ export default function NotificationsPage() {
                         { backgroundColor: getStatusColor(notification.relatedIssue.status) }
                       ]}>
                         <Text style={styles.statusText}>
-                          {notification.relatedIssue.status.replace('_', ' ').toUpperCase()}
+                          {notification.relatedIssue?.status?.replace('_', ' ')?.toUpperCase() || ''}
                         </Text>
                       </View>
                       <Text style={styles.issueCategory}>

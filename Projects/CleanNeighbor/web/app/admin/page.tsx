@@ -186,7 +186,7 @@ export default function AdminDashboard() {
                       </div>
                       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                         <MapPin className="h-3 w-3" />
-                        <span>{issue.location.city}, {issue.location.district}</span>
+                        <span>{issue.location_address || 'Unknown location'}</span>
                         <span>•</span>
                         <Calendar className="h-3 w-3" />
                         <span>{new Date(issue.createdAt).toLocaleDateString()}</span>

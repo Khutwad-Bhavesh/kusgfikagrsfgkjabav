@@ -126,9 +126,7 @@ export default function IssueDetailPage() {
     try {
       await updateIssueStatus({
         issueId: issue._id,
-        newStatus,
-        updatedBy: currentAdminUser._id,
-        note: `Status updated to ${newStatus} by admin.`,
+        status: newStatus,
       });
       toast.success(`Issue status updated to ${newStatus}.`);
     } catch (error) {
@@ -151,8 +149,6 @@ export default function IssueDetailPage() {
       await assignIssueToDepartment({
         issueId: issue._id,
         departmentId: selectedDepartment,
-        assignedBy: currentAdminUser._id,
-        note: `Issue assigned to new department by admin.`,
       });
       toast.success("Issue assigned to department successfully!");
     } catch (error) {
@@ -280,7 +276,7 @@ export default function IssueDetailPage() {
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm">
-                    {issue.location.address}, {issue.location.city}, {issue.location.district}
+                    {issue.location_address || 'Unknown location'}
                   </span>
                 </div>
               </div>

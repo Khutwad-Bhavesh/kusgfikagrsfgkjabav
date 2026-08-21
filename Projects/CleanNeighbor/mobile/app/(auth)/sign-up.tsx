@@ -13,6 +13,7 @@ import {
 import { useSignUp, useOAuth } from '@clerk/clerk-expo'
 import { Link, useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
+import * as Linking from 'expo-linking'
 
 import * as WebBrowser from 'expo-web-browser'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -24,6 +25,14 @@ export default function SignUpPage() {
   const { isLoaded, signUp, setActive } = useSignUp()
   const { startOAuthFlow } = useOAuth({ strategy: 'oauth_google' })
   const router = useRouter()
+
+  const showAlert = (title: string, message: string) => {
+    if (Platform.OS === 'web') {
+      window.alert(`${title}\n\n${message}`);
+    } else {
+      Alert.alert(title, message);
+    }
+  };
 
 
   const [emailAddress, setEmailAddress] = useState('')
@@ -42,7 +51,7 @@ export default function SignUpPage() {
     // Prevent rapid successive attempts (30 second cooldown)
     const now = Date.now()
     if (now - lastAttemptTime < 30000) {
-      Alert.alert(
+      showAlert(
         'Please Wait', 
         'Please wait 30 seconds between sign-up attempts to avoid rate limiting.'
       )
@@ -50,17 +59,17 @@ export default function SignUpPage() {
     }
 
     if (!emailAddress.trim() || !password.trim() || !confirmPassword.trim()) {
-      Alert.alert('Error', 'Please fill in all fields')
+      showAlert('Error', 'Please fill in all fields')
       return
     }
 
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match')
+      showAlert('Error', 'Passwords do not match')
       return
     }
 
     if (password.length < 8) {
-      Alert.alert('Error', 'Password must be at least 8 characters long')
+      showAlert('Error', 'Password must be at least 8 characters long')
       return
     }
 
@@ -80,17 +89,17 @@ export default function SignUpPage() {
       
       // Handle specific error types
       if (err.errors?.[0]?.code === 'too_many_requests') {
-        Alert.alert(
+        showAlert(
           'Too Many Requests', 
           'Please wait a few minutes before trying again. Clerk has rate limits to protect against spam.'
         )
       } else if (err.errors?.[0]?.code === 'form_identifier_exists') {
-        Alert.alert(
+        showAlert(
           'Account Already Exists', 
           'An account with this email already exists. Please try signing in instead.'
         )
       } else {
-        Alert.alert(
+        showAlert(
           'Sign Up Failed', 
           err.errors?.[0]?.message || 'Please check your information and try again.'
         )
@@ -104,7 +113,7 @@ export default function SignUpPage() {
     if (!isLoaded) return
 
     if (!code.trim()) {
-      Alert.alert('Error', 'Please enter the verification code')
+      showAlert('Error', 'Please enter the verification code')
       return
     }
 
@@ -117,14 +126,13 @@ export default function SignUpPage() {
 
       if (signUpAttempt.status === 'complete') {
         await setActive({ session: signUpAttempt.createdSessionId })
-        router.replace('/(tabs)')
       } else {
         console.error('Verification incomplete:', JSON.stringify(signUpAttempt, null, 2))
-        Alert.alert('Error', 'Verification incomplete. Please try again.')
+        showAlert('Error', 'Verification incomplete. Please try again.')
       }
     } catch (err: any) {
       console.error('Verification error:', JSON.stringify(err, null, 2))
-      Alert.alert('Verification Failed', err.errors?.[0]?.message || 'Invalid code. Please try again.')
+      showAlert('Verification Failed', err.errors?.[0]?.message || 'Invalid code. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -133,15 +141,17 @@ export default function SignUpPage() {
   const onGoogleSignUpPress = async () => {
     try {
       setIsLoading(true)
-      const { createdSessionId, setActive } = await startOAuthFlow()
+      const { createdSessionId, setActive } = await startOAuthFlow({
+        redirectUrl: Linking.createURL('/(tabs)')
+      })
 
       if (createdSessionId) {
         await setActive!({ session: createdSessionId })
-        router.replace('/(tabs)')
       }
     } catch (err: any) {
       console.error('OAuth error:', err)
-      Alert.alert('Google Sign Up Failed', 'Please try again.')
+      const errorMessage = err?.errors?.[0]?.longMessage || err?.errors?.[0]?.message || err?.message || JSON.stringify(err) || 'Unknown error occurred.';
+      showAlert('Google Sign Up Failed', errorMessage)
     } finally {
       setIsLoading(false)
     }
@@ -150,10 +160,10 @@ export default function SignUpPage() {
   const resendCode = async () => {
     try {
       await signUp?.prepareEmailAddressVerification({ strategy: 'email_code' })
-      Alert.alert('Success', 'Verification code sent!')
+      showAlert('Success', 'Verification code sent!')
     } catch (err: any) {
       console.error('Resend error:', err)
-      Alert.alert('Error', 'Failed to resend code. Please try again.')
+      showAlert('Error', 'Failed to resend code. Please try again.')
     }
   }
 

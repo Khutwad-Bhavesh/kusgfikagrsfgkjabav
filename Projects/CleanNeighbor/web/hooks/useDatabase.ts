@@ -21,8 +21,16 @@ export function useDatabaseQuery(collectionName: string, queryConstraints: any =
         const { data: result, error: fetchError } = await query;
         
         if (fetchError) throw fetchError;
-        
-        setData(result);
+        let mappedResult = result;
+        if (result && Array.isArray(result) && collectionName.toLowerCase() === 'wastereports') {
+            mappedResult = result.map(item => ({
+                ...item,
+                priority: item.ai_analysis?.priority || 'medium',
+                createdAt: item.created_at,
+                updatedAt: item.updated_at || item.created_at
+            }));
+        }
+        setData(mappedResult);
       } catch (err: any) {
         console.error(`Supabase query error for ${collectionName}:`, err);
         setError(err);
@@ -65,7 +73,16 @@ export function useDatabaseDoc(collectionName: string, docId?: string) {
         .single();
         
       if (!error && result) {
-        setData(result);
+        let mappedResult = result;
+        if (collectionName.toLowerCase() === 'wastereports') {
+            mappedResult = {
+                ...result,
+                priority: result.ai_analysis?.priority || 'medium',
+                createdAt: result.created_at,
+                updatedAt: result.updated_at || result.created_at
+            };
+        }
+        setData(mappedResult);
       } else {
         setData(null);
       }

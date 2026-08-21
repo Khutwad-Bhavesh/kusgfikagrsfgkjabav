@@ -1,10 +1,30 @@
 // Create a new file: mobile/app/utils/tokenCache.ts
 
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 import { TokenCache } from '@clerk/clerk-expo/';
 
-// Create a custom token cache using Expo SecureStore
+// Create a custom token cache using Expo SecureStore for Native and localStorage for Web
 const createTokenCache = (): TokenCache => {
+  if (Platform.OS === 'web') {
+    return {
+      async getToken(key: string) {
+        try {
+          return typeof window !== 'undefined' ? window.localStorage.getItem(key) : null;
+        } catch (err) {
+          return null;
+        }
+      },
+      async saveToken(key: string, value: string) {
+        try {
+          if (typeof window !== 'undefined') {
+            window.localStorage.setItem(key, value);
+          }
+        } catch (err) {}
+      },
+    };
+  }
+
   return {
     async getToken(key: string) {
       try {

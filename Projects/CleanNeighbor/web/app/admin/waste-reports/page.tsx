@@ -108,8 +108,7 @@ export default function IssuesPage() {
         searchTerm === "" ||
         issue.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         issue.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        issue.location.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        issue.location.district.toLowerCase().includes(searchTerm.toLowerCase())
+        (issue.location_address && issue.location_address.toLowerCase().includes(searchTerm.toLowerCase()))
 
       const matchesStatus = statusFilter === "all" || issue.status === statusFilter
       const matchesPriority = priorityFilter === "all" || issue.priority === priorityFilter
@@ -124,8 +123,8 @@ export default function IssuesPage() {
       let bValue: any = b[sortField]
 
       if (sortField === "location") {
-        aValue = `${a.location.city}, ${a.location.district}`
-        bValue = `${b.location.city}, ${b.location.district}`
+        aValue = a.location_address || ""
+        bValue = b.location_address || ""
       }
 
       if (typeof aValue === "string") {
@@ -172,10 +171,8 @@ export default function IssuesPage() {
       }
 
       await updateIssueStatus({
-        issueId: issueId as any,
-        newStatus: newStatus as "pending" | "acknowledged" | "in_progress" | "resolved" | "rejected",
-        updatedBy: currentAdminUser._id,
-        note: `Status updated to ${newStatus} by ${currentAdminUser.firstName} ${currentAdminUser.lastName}`,
+        issueId: issueId,
+        status: newStatus,
       })
       toast.success("Issue status updated successfully")
     } catch (error) {
@@ -192,10 +189,8 @@ export default function IssuesPage() {
       }
 
       await assignToDepartment({
-        issueId: issueId as any,
-        departmentId: departmentId as any,
-        assignedBy: currentAdminUser._id,
-        note: `Issue assigned by ${currentAdminUser.firstName} ${currentAdminUser.lastName} from admin dashboard`,
+        issueId: issueId,
+        departmentId: departmentId,
       })
       toast.success("Issue assigned to department successfully")
     } catch (error) {
@@ -651,7 +646,7 @@ export default function IssuesPage() {
                             <div className="flex items-center gap-1">
                               <MapPin className="h-3 w-3 text-muted-foreground flex-shrink-0" />
                               <span className="text-sm truncate">
-                                {issue.location.city}, {issue.location.district}
+                                {issue.location_address || 'Unknown location'}
                               </span>
                             </div>
                           </TableCell>

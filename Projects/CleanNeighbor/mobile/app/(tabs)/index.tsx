@@ -37,7 +37,12 @@ export default function HomePage() {
 
   const recentIssues = useDatabaseQuery('wasteReports', { limit: 10 });
 
-  const issueStats = useDatabaseQuery('wasteReports', {});
+  const allIssues = useDatabaseQuery('wasteReports', {});
+  const issueStats = allIssues ? {
+    total: allIssues.length,
+    inProgress: allIssues.filter((i: any) => i.status !== 'Resolved' && i.status !== 'Rejected' && i.status !== 'resolved').length,
+    resolved: allIssues.filter((i: any) => i.status === 'Resolved' || i.status === 'resolved').length
+  } : undefined;
 
   const createOrUpdateUser = useDatabaseMutation('users');
 
@@ -91,9 +96,6 @@ export default function HomePage() {
     );
   }
 
-  if (isLoaded && !isSignedIn) {
-    return <Redirect href="/" />;
-  }
 
   if (!user) {
     return (
@@ -143,7 +145,8 @@ export default function HomePage() {
     }
   };
 
-  const formatNumber = (num: number) => {
+  const formatNumber = (num: number | undefined | null) => {
+    if (num === undefined || num === null || isNaN(num)) return "0";
     if (num >= 1000) {
       return (num / 1000).toFixed(1) + "k";
     }
@@ -517,7 +520,7 @@ export default function HomePage() {
                           { color: getStatusColor(issue.status) },
                         ]}
                       >
-                        {issue.status.replace("_", " ").toUpperCase()}
+                        {issue.status?.replace("_", " ")?.toUpperCase() || ''}
                       </Text>
                     </View>
                     <View style={styles.categoryTag}>
@@ -535,8 +538,8 @@ export default function HomePage() {
                   <View style={styles.issueFooter}>
                     <View style={styles.locationContainer}>
                       <Ionicons name="location" size={14} color="#6b7280" />
-                      <Text style={styles.locationText}>
-                        {issue.location.city}, {issue.location.district}
+                      <Text style={styles.locationText} numberOfLines={1}>
+                        {issue.location_address || 'Unknown location'}
                       </Text>
                     </View>
                     
@@ -657,6 +660,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     resizeMode: "contain",
+    borderRadius: 24,
   },
   headerButton: {
     marginLeft: 12,

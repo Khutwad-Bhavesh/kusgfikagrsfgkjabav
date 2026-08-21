@@ -388,8 +388,8 @@ export default function EnhancedReportWastePage() {
         isIssue: result.overall_result.is_issue,
         confidence: result.overall_result.confidence,
         category:
-          result.overall_result.predicted_class === "issue"
-            ? "Infrastructure"
+          result.overall_result.predicted_class && result.overall_result.predicted_class !== "clean"
+            ? aiAnalysisService.mapAICategoryToFormCategory(result.overall_result.predicted_class)
             : undefined,
         categoryConfidence: result.overall_result.confidence,
         suggestions: result.statistics
@@ -418,7 +418,9 @@ export default function EnhancedReportWastePage() {
         isIssue: result.is_issue || false,
         confidence: result.confidence || 0,
         category:
-          result.predicted_class === "issue" ? "Infrastructure" : undefined,
+          result.predicted_class && result.predicted_class !== "clean"
+            ? aiAnalysisService.mapAICategoryToFormCategory(result.predicted_class)
+            : undefined,
         categoryConfidence: result.confidence || 0,
         suggestions: aiAnalysisService.generateSuggestions(result),
       };
@@ -469,6 +471,18 @@ export default function EnhancedReportWastePage() {
             mediaType: mediaType,
           });
 
+          if (aiAnalysis.suggestions === "Content blocked by safety filters.") {
+            setMedia((prev) => prev.filter((item) => item.uri !== newMedia.uri));
+            setTimeout(() => {
+              if (Platform.OS === 'web') {
+                window.alert("Upload Blocked: This image was flagged by safety filters for inappropriate content.");
+              } else {
+                Alert.alert("Upload Blocked", "This image was flagged by safety filters for inappropriate content.");
+              }
+            }, 100);
+            return;
+          }
+
           if (aiAnalysis.isIssue && aiAnalysis.category) {
             const newPriority = getPriorityFromConfidence(
               aiAnalysis.confidence
@@ -480,24 +494,32 @@ export default function EnhancedReportWastePage() {
               priority: newPriority,
             }));
           } else if (!aiAnalysis.isIssue && aiAnalysis.confidence > 0.6) {
-            Alert.alert(
-              "No Civic Issue Detected",
-              `Our AI analysis (${Math.round(aiAnalysis.confidence * 100)}% confidence) suggests this ${mediaType} may not show a civic issue. Please upload clearer media that shows the problem, or remove this ${mediaType}.`,
-              [
-                {
-                  text: `Remove ${mediaType}`,
-                  onPress: () => {
-                    setMedia((prev) =>
-                      prev.filter((item) => item.uri !== newMedia.uri)
-                    );
+            if (Platform.OS === 'web') {
+              const keep = window.confirm(`No Civic Issue Detected\n\nOur AI analysis (${Math.round(aiAnalysis.confidence * 100)}% confidence) suggests this ${mediaType} may not show a valid civic issue (e.g. false claim).\n\nClick OK to keep it anyway, or Cancel to remove it.`);
+              if (!keep) {
+                setMedia((prev) => prev.filter((item) => item.uri !== newMedia.uri));
+                return;
+              }
+            } else {
+              Alert.alert(
+                "No Civic Issue Detected",
+                `Our AI analysis (${Math.round(aiAnalysis.confidence * 100)}% confidence) suggests this ${mediaType} may not show a valid civic issue (e.g. false claim). Please upload clearer media that shows the problem, or remove this ${mediaType}.`,
+                [
+                  {
+                    text: `Remove ${mediaType}`,
+                    onPress: () => {
+                      setMedia((prev) =>
+                        prev.filter((item) => item.uri !== newMedia.uri)
+                      );
+                    },
                   },
-                },
-                {
-                  text: `Keep ${mediaType}`,
-                  style: "cancel",
-                },
-              ]
-            );
+                  {
+                    text: `Keep ${mediaType}`,
+                    style: "cancel",
+                  },
+                ]
+              );
+            }
           }
         }
 
@@ -575,13 +597,20 @@ export default function EnhancedReportWastePage() {
       setIsSubmitting(false);
     };
   }, []);
-  const showMediaPicker = () =>
-    Alert.alert("Add Media", "Choose an option", [
-      { text: "Take Photo", onPress: takePhoto },
-      { text: "Record Video", onPress: recordVideo },
-      { text: "Gallery", onPress: pickMedia },
-      { text: "Cancel", style: "cancel" },
-    ]);
+  const showMediaPicker = () => {
+    if (Platform.OS === 'web') {
+      // Alert.alert with buttons does not work on Web. 
+      // ImagePicker on Web natively opens the file dialog.
+      pickMedia();
+    } else {
+      Alert.alert("Add Media", "Choose an option", [
+        { text: "Take Photo", onPress: takePhoto },
+        { text: "Record Video", onPress: recordVideo },
+        { text: "Gallery", onPress: pickMedia },
+        { text: "Cancel", style: "cancel" },
+      ]);
+    }
+  };
 
   const removeMedia = (index: number) =>
     setMedia(media.filter((_, i) => i !== index));
@@ -671,21 +700,16 @@ export default function EnhancedReportWastePage() {
       });
 
       const issueData = {
-        reportedBy: convexUser._id,
+        userId: convexUser._id,
         title: formData.title.trim(),
         description: formData.description.trim(),
         category: formData.category,
-        location: {
-          address: formData.address.trim(),
-          city: formData.city,
-          district: formData.district,
-          pincode: formData.pincode.trim() || undefined,
-          landmark: formData.landmark.trim() || undefined,
-          coordinates: location || undefined,
-        },
-        priority: formData.priority,
-        images: imageStorageIds.length > 0 ? imageStorageIds : undefined,
-        videos: videoStorageIds.length > 0 ? videoStorageIds : undefined,
+        location_lat: location?.lat || 0,
+        location_lng: location?.lng || 0,
+        location_address: formData.address.trim(),
+        status: 'pending',
+        image_url: imageStorageIds.length > 0 ? imageStorageIds[0] : null,
+        ai_analysis: { priority: formData.priority }
       };
 
       console.log(
@@ -701,7 +725,7 @@ export default function EnhancedReportWastePage() {
 
       try {
         const issueNumber =
-          result.issueNumber || `SMD-${result.issueId.slice(-6).toUpperCase()}`;
+          result.issueNumber || `SMD-${result.issueId?.slice(-6)?.toUpperCase() || 'UNKNOWN'}`;
         const notificationTitle = departmentName
           ? "✅ Issue Assigned to Department"
           : "✅ Issue Submitted Successfully";
@@ -890,7 +914,7 @@ export default function EnhancedReportWastePage() {
               <View style={[styles.dropdownButton, styles.disabledDropdown]}>
                 <Text style={styles.dropdownButtonText}>
                   {PRIORITY_LEVELS.find((p) => p.value === formData.priority)
-                    ?.label || formData.priority.toUpperCase()}
+                    ?.label || formData.priority?.toUpperCase() || ""}
                 </Text>
                 <Ionicons name="lock-closed" size={20} color="#8b5cf6" />
               </View>

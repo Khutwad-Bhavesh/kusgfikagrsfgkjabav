@@ -125,7 +125,7 @@ function NotificationProvider({ children }: { children: React.ReactNode }) {
         body,
         data: {
           type: 'new_comment',
-          isOfficial: isOfficial.toString(),
+          isOfficial: String(!!isOfficial),
         }
       });
       console.log('✅ Local notification sent for comment');

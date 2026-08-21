@@ -103,42 +103,62 @@ const MapComponent: React.FC<MapComponentProps> = ({ issues }) => {
         markersRef.current.forEach(marker => marker.remove());
         markersRef.current = [];
 
+        // Helper function to determine marker color based on issue status
+        const getStatusColor = (status: string) => {
+          switch (status) {
+            case 'pending': return '#eab308'; // yellow
+            case 'acknowledged': return '#3b82f6'; // blue
+            case 'in_progress': return '#8b5cf6'; // purple
+            case 'resolved': return '#22c55e'; // green
+            case 'rejected': return '#ef4444'; // red
+            default: return '#6b7280'; // gray
+          }
+        };
+
         // Loop through each issue and add a marker to the map
         issues.forEach((issue) => {
-          if (!issue.location.coordinates) return;
+          if (!issue.location_lat || !issue.location_lng) return;
 
-          // Helper function to determine marker color based on issue status
-          const getStatusColor = (status: string) => {
-            switch (status) {
-              case 'pending': return '#eab308'; // yellow
-              case 'acknowledged': return '#3b82f6'; // blue
-              case 'in_progress': return '#8b5cf6'; // purple
-              case 'resolved': return '#22c55e'; // green
-              case 'rejected': return '#ef4444'; // red
-              default: return '#6b7280'; // gray
-            }
-          };
+          const statusColor = getStatusColor(issue.status);
 
-          // Create a custom circle marker
-          const marker = L.circleMarker([issue.location.coordinates.lat, issue.location.coordinates.lng], {
+          // Get appropriate icon based on category or status
+          const iconType = "AlertCircle";
+          const iconColor = statusColor;
+
+          // Custom HTML for the marker to include an icon
+          const htmlIcon = `
+            <div style="background-color: white; border: 2px solid ${statusColor}; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+              <div style="background-color: ${statusColor}; border-radius: 50%; width: 12px; height: 12px;"></div>
+            </div>
+          `;
+
+          const customIcon = L.divIcon({
+            html: htmlIcon,
+            className: 'custom-leaflet-marker',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12],
+            popupAnchor: [0, -12],
+          });
+
+          const marker = L.circleMarker([issue.location_lat, issue.location_lng], {
             radius: 8,
-            fillColor: getStatusColor(issue.status),
-            color: '#ffffff',
+            fillColor: statusColor,
+            color: "#ffffff",
             weight: 2,
             opacity: 1,
             fillOpacity: 0.8
           }).addTo(map);
-
-          // Create the HTML content for the popup window
+          
+          // Enhanced popup HTML
           const popupContent = `
-            <div style="padding: 8px; min-width: 250px; font-family: sans-serif;">
-              <h3 style="font-weight: 600; margin: 0 0 8px 0; font-size: 14px;">${issue.title}</h3>
-              <div style="margin-bottom: 8px;">
-                <span style="background-color: ${getStatusColor(issue.status)}20; color: ${getStatusColor(issue.status)}; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; text-transform: capitalize;">${issue.status.replace('_', ' ')}</span>
+            <div style="min-width: 200px;">
+              <h3 style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600;">${issue.title}</h3>
+              <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                <span style="background-color: ${statusColor}20; color: ${statusColor}; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; text-transform: capitalize;">${issue.status}</span>
                 <span style="background-color: #f3f4f6; color: #374151; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-left: 4px; text-transform: capitalize;">${issue.priority}</span>
               </div>
-              <p style="margin: 0 0 4px 0; font-size: 12px;"><strong>Category:</strong> ${issue.category}</p>
-              <p style="margin: 0 0 4px 0; font-size: 12px;"><strong>Location:</strong> ${issue.location.address}</p>
+              <p style="margin: 0 0 4px 0; font-size: 12px; color: #4b5563;">${issue.description.substring(0, 100)}${issue.description.length > 100 ? '...' : ''}</p>
+              <p style="margin: 0 0 4px 0; font-size: 12px;"><strong>Location:</strong> ${issue.location_address || 'Unknown'}</p>
               <p style="margin: 0 0 4px 0; font-size: 12px;"><strong>Reporter:</strong> ${issue.reporter?.firstName || ''} ${issue.reporter?.lastName || ''}</p>
               <p style="margin: 0 0 8px 0; font-size: 12px; color: #6b7280;">${issue.description.substring(0, 100)}${issue.description.length > 100 ? '...' : ''}</p>
               <a href="/admin/waste-reports/${issue._id}" style="display: inline-block; background-color: #16a34a; color: white; padding: 4px 12px; border-radius: 4px; text-decoration: none; font-size: 12px;">View Details</a>

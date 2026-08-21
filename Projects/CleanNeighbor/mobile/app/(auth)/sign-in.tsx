@@ -10,9 +10,10 @@ import {
   KeyboardAvoidingView,
   Platform
 } from 'react-native'
-import { useSignIn, useOAuth } from '@clerk/clerk-expo'
+import { useSignIn, useOAuth, useAuth } from '@clerk/clerk-expo'
 import { Link, useRouter } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
+import * as Linking from 'expo-linking'
 
 import * as WebBrowser from 'expo-web-browser'
 
@@ -22,7 +23,16 @@ WebBrowser.maybeCompleteAuthSession()
 export default function SignInPage() {
   const { signIn, setActive, isLoaded } = useSignIn()
   const { startOAuthFlow } = useOAuth({ strategy: 'oauth_google' })
+  const { signOut } = useAuth()
   const router = useRouter()
+
+  const showAlert = (title: string, message: string) => {
+    if (Platform.OS === 'web') {
+      window.alert(`${title}\n\n${message}`);
+    } else {
+      Alert.alert(title, message);
+    }
+  };
 
 
   const [emailAddress, setEmailAddress] = useState('')
@@ -34,7 +44,7 @@ export default function SignInPage() {
     if (!isLoaded) return
 
     if (!emailAddress.trim() || !password.trim()) {
-      Alert.alert('Error', 'Please fill in all fields')
+      showAlert('Error', 'Please fill in all fields')
       return
     }
 
@@ -48,14 +58,13 @@ export default function SignInPage() {
 
       if (signInAttempt.status === 'complete') {
         await setActive({ session: signInAttempt.createdSessionId })
-        router.replace('/(tabs)')
       } else {
         console.error('Sign in incomplete:', JSON.stringify(signInAttempt, null, 2))
-        Alert.alert('Error', 'Sign in incomplete. Please try again.')
+        showAlert('Error', 'Sign in incomplete. Please try again.')
       }
     } catch (err: any) {
       console.error('Sign in error:', JSON.stringify(err, null, 2))
-      Alert.alert('Sign In Failed', err.errors?.[0]?.message || 'Please check your credentials and try again.')
+      showAlert('Sign In Failed', err.errors?.[0]?.message || 'Please check your credentials and try again.')
     } finally {
       setIsLoading(false)
     }
@@ -64,15 +73,32 @@ export default function SignInPage() {
   const onGoogleSignInPress = async () => {
     try {
       setIsLoading(true)
-      const { createdSessionId, setActive } = await startOAuthFlow()
+      const { createdSessionId, setActive } = await startOAuthFlow({
+        redirectUrl: Linking.createURL('/(tabs)')
+      })
 
       if (createdSessionId) {
         await setActive!({ session: createdSessionId })
-        router.replace('/(tabs)')
       }
     } catch (err: any) {
       console.error('OAuth error:', err)
-      Alert.alert('Google Sign In Failed', 'Please try again.')
+      const errorMessage = err?.errors?.[0]?.longMessage || err?.errors?.[0]?.message || err?.message || JSON.stringify(err) || 'Unknown error occurred.';
+      
+      // Handle the stuck state where the server knows the user is signed in but the client doesn't
+      if (errorMessage.toLowerCase().includes('already signed in')) {
+        try {
+          await signOut();
+          if (Platform.OS === 'web') {
+            window.localStorage.clear();
+          }
+          showAlert('Session Reset', 'Your session was out of sync. We have reset it. Please click Continue with Google again.');
+        } catch (e) {
+          showAlert('Google Sign In Failed', errorMessage);
+        }
+        return;
+      }
+
+      showAlert('Google Sign In Failed', errorMessage)
     } finally {
       setIsLoading(false)
     }

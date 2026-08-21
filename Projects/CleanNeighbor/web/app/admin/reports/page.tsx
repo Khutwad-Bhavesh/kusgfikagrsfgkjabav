@@ -233,7 +233,7 @@ export default function ReportsPage() {
           "Status": issue.status,
           "Priority": issue.priority,
           "Category": issue.category,
-          "Location": `${issue.location.city}, ${issue.location.district}`,
+          "Location": issue.location_address || "Unknown Location",
           "Reporter": issue.reporter ? `${issue.reporter.firstName} ${issue.reporter.lastName}` : "Unknown",
           "Date Created": new Date(issue.createdAt).toLocaleDateString(),
           "Resolution Date": issue.status === "resolved" ? new Date(issue.updatedAt).toLocaleDateString() : "Not resolved"

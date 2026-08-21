@@ -143,7 +143,7 @@ export default function IssueDetailPage() {
 
     try {
       await Share.share({
-        message: `Check out this civic issue: ${issue.title}\n\nLocation: ${issue.location.address}, ${issue.location.city}\n\nDescription: ${issue.description}`,
+        message: `Check out this civic issue: ${issue.title}\n\nLocation: ${issue.location_address || 'Unknown'}\n\nDescription: ${issue.description}`,
         title: "Civic Issue Report",
       });
     } catch (error) {
@@ -229,7 +229,7 @@ export default function IssueDetailPage() {
     );
   }
 
-  const hasUpvoted = convexUser && issue.upvotedBy.includes(convexUser._id);
+  const hasUpvoted = convexUser && (issue.upvotedBy || []).includes(convexUser._id);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -265,7 +265,7 @@ export default function IssueDetailPage() {
                 color="white"
               />
               <Text style={styles.statusText}>
-                {issue.status.replace("_", " ").toUpperCase()}
+                {issue.status?.replace("_", " ")?.toUpperCase() || ""}
               </Text>
             </View>
             <Text style={styles.issueId}>#{issue._id.slice(-6)}</Text>
@@ -414,7 +414,7 @@ export default function IssueDetailPage() {
                   },
                 ]}
               >
-                {issue.priority.toUpperCase()} PRIORITY
+                {issue.priority?.toUpperCase() || ''} PRIORITY
               </Text>
             </View>
           </View>
@@ -427,17 +427,8 @@ export default function IssueDetailPage() {
             <Ionicons name="location" size={24} color="#16a34a" />
             <View style={styles.locationInfo}>
               <Text style={styles.locationAddress}>
-                {issue.location.address}
+                {issue.location_address || 'Unknown location'}
               </Text>
-              <Text style={styles.locationDetails}>
-                {issue.location.city}, {issue.location.district}
-                {issue.location.pincode && ` - ${issue.location.pincode}`}
-              </Text>
-              {issue.location.landmark && (
-                <Text style={styles.landmark}>
-                  Near: {issue.location.landmark}
-                </Text>
-              )}
             </View>
           </View>
         </View>
@@ -456,7 +447,7 @@ export default function IssueDetailPage() {
                 />
                 <View style={styles.statusUpdateContent}>
                   <Text style={styles.statusUpdateTitle}>
-                    {update.newStatus.replace("_", " ").toUpperCase()}
+                    {update.newStatus?.replace("_", " ")?.toUpperCase() || ""}
                   </Text>
                   {update.note && (
                     <Text style={styles.statusUpdateNote}>{update.note}</Text>

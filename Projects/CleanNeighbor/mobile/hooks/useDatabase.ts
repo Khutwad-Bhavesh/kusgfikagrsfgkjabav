@@ -16,13 +16,32 @@ export function useDatabaseQuery(collectionName: string, queryConstraints: any =
     const fetchData = async () => {
       try {
         let query = supabase.from(collectionName.toLowerCase()).select('*');
-        // Basic translation of queryConstraints if needed (omitted for simplicity as most are basic fetches)
+        
+        if (queryConstraints && typeof queryConstraints === 'object') {
+          for (const [key, value] of Object.entries(queryConstraints)) {
+            if (value !== undefined) {
+              if (key === 'limit') {
+                query = query.limit(value as number);
+              } else if (key === 'order') {
+                query = query.order(value as string, { ascending: false });
+              } else {
+                query = query.eq(key, value);
+              }
+            }
+          }
+        }
         
         const { data: result, error: fetchError } = await query;
         
         if (fetchError) throw fetchError;
         
-        setData(result);
+        // If we queried by a specific ID or clerkId, it's usually meant to be a single record
+        // (Do NOT include userId here, as a user can have many waste reports)
+        if (queryConstraints && (queryConstraints.clerkId || queryConstraints._id)) {
+           setData(result && result.length > 0 ? result[0] : null);
+        } else {
+           setData(result);
+        }
       } catch (err: any) {
         console.error(`Supabase query error for ${collectionName}:`, err);
         setError(err);

@@ -8,7 +8,8 @@ import {
   TextInput,
   Alert,
   Switch,
-  Image
+  Image,
+  Platform
 } from 'react-native'
 import { useUser, useAuth } from '@clerk/clerk-expo'
 import { useDatabaseQuery, useDatabaseDoc, useDatabaseMutation } from "../../hooks/useDatabase";
@@ -74,6 +75,19 @@ export default function ProfilePage() {
   }
 
   const handleSignOut = async () => {
+    if (Platform.OS === 'web') {
+      if (window.confirm('Are you sure you want to sign out?')) {
+        try {
+          await signOut()
+          router.replace('/(auth)/sign-in')
+        } catch (error) {
+          console.error('Error signing out:', error)
+          window.alert('Failed to sign out. Please try again.')
+        }
+      }
+      return;
+    }
+
     Alert.alert(
       'Sign Out',
       'Are you sure you want to sign out?',
@@ -140,7 +154,7 @@ export default function ProfilePage() {
           
           <View style={styles.roleContainer}>
             <Ionicons name="shield-checkmark" size={16} color="#16a34a" />
-            <Text style={styles.roleText}>{convexUser.role.toUpperCase()}</Text>
+            <Text style={styles.roleText}>{convexUser?.role?.toUpperCase() || ''}</Text>
           </View>
         </View>
 

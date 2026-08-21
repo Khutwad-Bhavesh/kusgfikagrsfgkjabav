@@ -118,10 +118,9 @@ export default function TrackIssuesPage() {
   const filteredIssues = displayIssues?.filter(issue => {
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase()
-      return issue.title.toLowerCase().includes(query) ||
-             issue.description.toLowerCase().includes(query) ||
-             issue.location.address.toLowerCase().includes(query) ||
-             issue.location.city.toLowerCase().includes(query)
+      return (issue.title && issue.title.toLowerCase().includes(query)) ||
+             (issue.description && issue.description.toLowerCase().includes(query)) ||
+             (issue.location_address && issue.location_address.toLowerCase().includes(query))
     }
     return true
   }) || []
@@ -248,7 +247,7 @@ export default function TrackIssuesPage() {
                     color={getStatusColor(issue.status)} 
                   />
                   <Text style={[styles.statusText, { color: getStatusColor(issue.status) }]}>
-                    {issue.status.replace('_', ' ').toUpperCase()}
+                    {issue.status?.replace('_', ' ')?.toUpperCase() || ''}
                   </Text>
                 </View>
                 <Text style={styles.issueDate}>{formatDate(issue.createdAt)}</Text>
@@ -272,7 +271,7 @@ export default function TrackIssuesPage() {
                            issue.priority === 'high' ? '#ea580c' : 
                            issue.priority === 'medium' ? '#d97706' : '#16a34a'
                   }]}>
-                    {issue.priority.toUpperCase()}
+                    {issue.priority?.toUpperCase() || ''}
                   </Text>
                 </View>
               </View>
@@ -281,8 +280,8 @@ export default function TrackIssuesPage() {
               <View style={styles.issueFooter}>
                 <View style={styles.locationContainer}>
                   <Ionicons name="location-outline" size={14} color="#6b7280" />
-                  <Text style={styles.locationText}>
-                    {issue.location.city}, {issue.location.district}
+                  <Text style={styles.locationText} numberOfLines={1}>
+                    {issue.location_address || 'Unknown location'}
                   </Text>
                 </View>
                 

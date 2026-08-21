@@ -77,12 +77,12 @@ export default function MapViewPage() {
 
   // Add coordinates to issues that don't have them
   const issuesWithCoordinates = filteredIssues.map((issue, index) => {
-    if (issue.location.coordinates) {
+    if (issue.location_lat && issue.location_lng) {
       return {
         ...issue,
         coordinates: {
-          lat: issue.location.coordinates.lat,
-          lng: issue.location.coordinates.lng,
+          lat: issue.location_lat,
+          lng: issue.location_lng,
         }
       }
     } else {
@@ -128,7 +128,7 @@ export default function MapViewPage() {
           <div style="min-width: 200px;">
             <h3 style="margin: 0 0 8px 0; color: #1f2937; font-size: 14px;">${title}</h3>
             <p style="margin: 0 0 4px 0; color: #16a34a; font-size: 12px; font-weight: 600;">${issue.category}</p>
-            <p style="margin: 0 0 4px 0; color: #6b7280; font-size: 12px;">Status: ${issue.status.replace('_', ' ').toUpperCase()}</p>
+            <p style="margin: 0 0 4px 0; color: #6b7280; font-size: 12px;">Status: ${issue.status?.replace('_', ' ')?.toUpperCase() || ''}</p>
             <p style="margin: 0 0 8px 0; color: #6b7280; font-size: 12px;">${description}...</p>
             <p style="margin: 0; color: #9ca3af; font-size: 11px;">${new Date(issue.createdAt).toLocaleDateString()}</p>
             <button onclick="window.ReactNativeWebView.postMessage('${issue._id}')" 
