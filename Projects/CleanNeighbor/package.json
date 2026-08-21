@@ -1,0 +1,28 @@
+{
+  "name": "shuchithvam",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adityashah2701/Samadhan.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/adityashah2701/Samadhan/issues"
+  },
+  "homepage": "https://github.com/adityashah2701/Samadhan#readme",
+  "dependencies": {
+    "convex": "^1.27.0",
+    "resend": "^6.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2"
+  }
+}

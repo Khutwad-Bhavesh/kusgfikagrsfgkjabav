@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+  <domain-config cleartextTrafficPermitted="true">
+    <domain includeSubdomains="true">localhost</domain>
+    <domain includeSubdomains="true">10.0.2.2</domain>
+    <domain includeSubdomains="true">127.0.0.1</domain>
+    <domain includeSubdomains="true">192.168.1.1</domain>
+    <domain includeSubdomains="true">172.16.234.63</domain>
+  </domain-config>
+  <domain-config cleartextTrafficPermitted="false">
+    <domain includeSubdomains="true">samadhan-ml-task-server.onrender.com</domain>
+    <domain includeSubdomains="true">usable-salamander-542.convex.cloud</domain>
+    <domain includeSubdomains="true">clerk.accounts.dev</domain>
+  </domain-config>
+  <base-config cleartextTrafficPermitted="false">
+    <trust-anchors>
+      <certificates src="system"/>
+      <certificates src="user"/>
+    </trust-anchors>
+  </base-config>
+</network-security-config>

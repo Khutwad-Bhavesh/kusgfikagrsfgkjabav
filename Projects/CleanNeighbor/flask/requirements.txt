@@ -1,0 +1,6 @@
+Flask==3.1.2
+flask-cors==6.0.1
+gunicorn==23.0.0
+pillow
+psutil
+google-generativeai

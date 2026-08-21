@@ -1,0 +1,44 @@
+# Build artifacts
+android/
+ios/
+build/
+dist/
+
+# Dependencies  
+node_modules/.cache/
+.expo/
+
+# Development files
+.vscode/
+.git/
+.DS_Store
+
+# Documentation
+README.md
+*.md
+
+# Verification scripts (not needed for build)
+verify-and-build.sh
+
+# Backup files
+*.backup
+network_security_config.xml.backup
+
+# Large media files (if any - but keep essential assets)
+**/*.mov
+**/*.avi
+**/*.mkv
+
+# Logs and temp files
+*.log
+.tmp/
+.temp/
+
+# IDE files
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+Thumbs.db
+.DS_Store

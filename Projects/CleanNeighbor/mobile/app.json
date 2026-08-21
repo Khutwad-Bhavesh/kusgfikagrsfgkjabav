@@ -1,0 +1,122 @@
+{
+  "expo": {
+    "name": "Shuchithvam",
+    "slug": "Shuchithvam",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/logo.png",
+    "scheme": "shuchithvam",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0f172a"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.adityashah27.shuchithvam",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSLocationWhenInUseUsageDescription": "This app needs your location to tag civic issues accurately.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs your location to provide relevant updates and tag civic issues accurately.",
+        "NSCameraUsageDescription": "This app needs access to your camera to take photos and record videos of civic issues.",
+        "NSMicrophoneUsageDescription": "This app needs access to your microphone to record videos of civic issues.",
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to let you upload images and videos of civic issues.",
+        "NSUserNotificationUsageDescription": "This app uses notifications to keep you updated about your civic issues and important announcements."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/logo.png",
+        "backgroundColor": "#0f172a"
+      },
+      "package": "com.adityashah27.shuchithvam",
+      "compileSdkVersion": 34,
+      "targetSdkVersion": 34,
+      "minSdkVersion": 23,
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VIDEO",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE",
+        "android.permission.WAKE_LOCK",
+        "android.permission.POST_NOTIFICATIONS"
+      ],
+      "enableProguardInReleaseBuilds": true,
+      "enableShrinkResourcesInReleaseBuilds": true,
+      "networkSecurityConfig": "network_security_config",
+      "allowBackup": false,
+      "largeHeap": true
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/logo.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Shuchithvam to access your camera to take photos and record videos of civic issues.",
+          "microphonePermission": "Allow Shuchithvam to access your microphone for video recording."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Shuchithvam to access your photos to upload images and videos of civic issues.",
+          "cameraPermission": "Allow Shuchithvam to access your camera to take photos and record videos of civic issues."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Shuchithvam to use your location to tag civic issues accurately.",
+          "locationAlwaysPermission": "Allow Shuchithvam to use your location to provide relevant updates.",
+          "locationWhenInUsePermission": "Allow Shuchithvam to use your location to tag civic issues accurately."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/logo.png",
+          "color": "#16a34a",
+          "defaultChannel": "shuchithvam-notifications"
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/logo.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#0f172a"
+        }
+      ],
+      "expo-secure-store"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e7b433c9-4b7c-4b8e-bbfc-453d36608c00"
+      },
+      "EXPO_PUBLIC_CONVEX_URL": "https://usable-salamander-542.convex.cloud",
+      "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_cmFyZS1iYWRnZXItMTQuY2xlcmsuYWNjb3VudHMuZGV2JA",
+      "EXPO_PUBLIC_FLASK_SERVER_URL": "https://shuchithvam-ml-task-server.onrender.com",
+      "enableLegacyCreateRootApi": false
+    }
+  }
+}

@@ -1,0 +1,1 @@
+# Install shadcn/ui dependencies\nnpm install @radix-ui/react-slot @radix-ui/react-select @radix-ui/react-dialog @radix-ui/react-dropdown-menu @radix-ui/react-toast @radix-ui/react-avatar @radix-ui/react-badge class-variance-authority clsx tailwind-merge lucide-react\n\n# Install additional dependencies\nnpm install react-hot-toast\n"

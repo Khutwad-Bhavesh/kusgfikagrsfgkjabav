@@ -1,0 +1,43 @@
+{
+  "model_info": {
+    "name": "Civic Issue Classifier",
+    "base_model": "EfficientNetB0",
+    "framework": "TensorFlow/Keras",
+    "version": "2.20.0",
+    "created_date": "2025-09-17T01:39:01.864128"
+  },
+  "dataset_info": {
+    "total_images": 4008,
+    "classes": [
+      "issue",
+      "no_issue"
+    ],
+    "class_distribution": {
+      "issue": 2008,
+      "no_issue": 2000
+    }
+  },
+  "training_config": {
+    "image_size": [
+      224,
+      224
+    ],
+    "batch_size": 32,
+    "initial_epochs": 20,
+    "fine_tune_epochs": 30,
+    "total_epochs": 50,
+    "initial_learning_rate": 0.001,
+    "fine_tune_learning_rate": 0.0001
+  },
+  "model_performance": {
+    "final_train_accuracy": 0.6822575330734253,
+    "final_val_accuracy": 0.846441924571991,
+    "final_train_loss": 0.518183708190918,
+    "final_val_loss": 0.38584887981414795
+  },
+  "files_generated": {
+    "keras_model": "best_civic_model.h5",
+    "tflite_model": "civic_issue_classifier.tflite",
+    "metadata": "model_metadata.json"
+  }
+}
