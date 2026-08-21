@@ -62,8 +62,35 @@ const MapComponent: React.FC<MapComponentProps> = ({ issues }) => {
           mapInstanceRef.current.remove();
         }
 
-        // Initialize the map, centered on Jharkhand with an appropriate zoom level
-        const map = L.map(mapRef.current).setView([23.63, 85.35],7);
+        // Initialize the map, initially centered on a fallback location (Jharkhand)
+        const map = L.map(mapRef.current).setView([23.63, 85.35], 7);
+        
+        // Try to get user's current location and center the map
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              
+              // Only set view to current location if we don't have issues to fit bounds to
+              // OR if this is the initial load (before bounds are fitted)
+              map.setView([latitude, longitude], 12);
+              
+              // Add a marker for the user's current location
+              L.circleMarker([latitude, longitude], {
+                radius: 8,
+                fillColor: '#3b82f6', // Blue for user location
+                color: '#ffffff',
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 1
+              }).bindPopup('<div style="text-align: center; font-weight: bold;">Your Current Location</div>').addTo(map);
+            },
+            (error) => {
+              console.warn("Geolocation error:", error);
+            },
+            { enableHighAccuracy: true, timeout: 5000 }
+          );
+        }
 
         // Add the OpenStreetMap tile layer for the map background
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

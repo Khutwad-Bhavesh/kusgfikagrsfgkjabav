@@ -52,11 +52,11 @@ export default function AdminMapView() {
 
   // Filter issues based on search and filters
   const filteredIssues = useMemo(() => {
-    if (!allIssues) return [];
+    if (!issues) return [];
     
-    return allIssues.filter((issue) => {
+    return issues.filter((issue) => {
       // Only show issues with coordinates
-      if (!issue.location.coordinates) return false;
+      if (!issue.location?.coordinates) return false;
       
       // Category filter
       if (selectedCategory !== "all" && issue.category !== selectedCategory) {
@@ -72,16 +72,16 @@ export default function AdminMapView() {
       if (searchQuery) {
         const searchLower = searchQuery.toLowerCase();
         return (
-          issue.title.toLowerCase().includes(searchLower) ||
-          issue.description.toLowerCase().includes(searchLower) ||
-          issue.location.address.toLowerCase().includes(searchLower) ||
-          issue.location.city.toLowerCase().includes(searchLower)
+          issue.title?.toLowerCase().includes(searchLower) ||
+          issue.description?.toLowerCase().includes(searchLower) ||
+          issue.location?.address?.toLowerCase().includes(searchLower) ||
+          issue.location?.city?.toLowerCase().includes(searchLower)
         );
       }
       
       return true;
     });
-  }, [allIssues, selectedCategory, selectedStatus, searchQuery]);
+  }, [issues, selectedCategory, selectedStatus, searchQuery]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -105,7 +105,7 @@ export default function AdminMapView() {
   };
 
   // Show loading state
-  if (currentUser === undefined || allIssues === undefined) {
+  if (currentAdminUser === undefined || issues === undefined) {
     return (
       <div className="h-full w-full flex items-center justify-center py-8">
         <Loader size={20} className="animate-spin text-green-500" /> 
@@ -114,7 +114,7 @@ export default function AdminMapView() {
   }
 
   // Check if user has admin access
-  if (currentUser === null || (currentUser.role !== 'admin' && currentUser.role !== 'department')) {
+  if (currentAdminUser === null || (currentAdminUser.role !== 'admin' && currentAdminUser.role !== 'department')) {
     return (
       <div className="flex items-center justify-center py-8">
         <div className="text-center">
@@ -127,7 +127,7 @@ export default function AdminMapView() {
     );
   }
 
-  if (!allIssues) {
+  if (!issues) {
     return (
       <div className="h-full w-full flex items-center justify-center py-8">
         <Loader size={20} className="animate-spin text-green-500" /> 
