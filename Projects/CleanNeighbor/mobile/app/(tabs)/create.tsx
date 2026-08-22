@@ -256,9 +256,15 @@ export default function EnhancedReportWastePage() {
 
   const getCurrentLocation = async () => {
     try {
-      const currentLocation = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Balanced,
-      });
+      let currentLocation = await Location.getLastKnownPositionAsync({});
+      if (!currentLocation) {
+        currentLocation = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+        });
+      }
+      
+      if (!currentLocation) return;
+      
       setLocation({
         lat: currentLocation.coords.latitude,
         lng: currentLocation.coords.longitude,
