@@ -106,9 +106,21 @@ def run_gemini_inference(image):
         )
     )
     
-    # Response is guaranteed to be JSON matching the schema
+    if not response.candidates:
+        raise Exception("blocked by safety filters")
+        
+    candidate = response.candidates[0]
+    if candidate.finish_reason and "SAFETY" in str(candidate.finish_reason).upper():
+        raise Exception("blocked by safety filters")
+        
+    if not response.text:
+        raise Exception("blocked by safety filters")
+        
     import json
-    return json.loads(response.text)
+    try:
+        return json.loads(response.text)
+    except Exception as e:
+        raise Exception(f"Failed to parse JSON: {str(e)}")
 
 @app.route('/predict/issue', methods=['POST'])
 def predict_issue_endpoint():
