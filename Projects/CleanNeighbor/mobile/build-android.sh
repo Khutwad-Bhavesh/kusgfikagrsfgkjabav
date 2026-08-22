@@ -55,7 +55,7 @@ echo "🔨 Building APK for testing with video support..."
 eas build --platform android --profile preview --clear-cache
 
 echo "✅ Build complete! Check your Expo dashboard for the download link."
-echo "🔗 Visit: https://expo.dev/accounts/adityashah27/projects/internal-hackathon-2025/builds"
+echo "🔗 Visit: https://expo.dev/accounts/[your-username]/projects/shuchithvam/builds"
 echo ""
 echo "📋 Build includes fixes for:"
 echo "   ✅ expo-av DEPRECATED - removed completely"

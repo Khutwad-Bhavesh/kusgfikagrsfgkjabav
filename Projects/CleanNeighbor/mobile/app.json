@@ -15,7 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.adityashah27.shuchithvam",
+      "bundleIdentifier": "com.bhaveshkhutwad.shuchithvam",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSLocationWhenInUseUsageDescription": "This app needs your location to tag civic issues accurately.",
@@ -31,7 +31,7 @@
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#0f172a"
       },
-      "package": "com.adityashah27.shuchithvam",
+      "package": "com.bhaveshkhutwad.shuchithvam",
       "compileSdkVersion": 34,
       "targetSdkVersion": 34,
       "minSdkVersion": 23,
@@ -110,9 +110,6 @@
     },
     "extra": {
       "router": {},
-      "eas": {
-        "projectId": "e7b433c9-4b7c-4b8e-bbfc-453d36608c00"
-      },
       "EXPO_PUBLIC_CONVEX_URL": "https://usable-salamander-542.convex.cloud",
       "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_cmFyZS1iYWRnZXItMTQuY2xlcmsuYWNjb3VudHMuZGV2JA",
       "EXPO_PUBLIC_FLASK_SERVER_URL": "https://shuchithvam-ml-task-server.onrender.com",

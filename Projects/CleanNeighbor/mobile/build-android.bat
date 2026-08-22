@@ -15,5 +15,5 @@ echo 🔨 Building APK for testing...
 eas build --platform android --profile preview
 
 echo ✅ Build complete! Check your Expo dashboard for the download link.
-echo 🔗 Visit: https://expo.dev/accounts/adityashah27/projects/internal-hackathon-2025/builds
+echo 🔗 Visit: https://expo.dev/accounts/[your-username]/projects/shuchithvam/builds
 pause
