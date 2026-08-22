@@ -96,7 +96,7 @@ SAFETY_SETTINGS = [
 
 def run_gemini_inference(image):
     response = gemini_client.models.generate_content(
-        model='gemini-2.5-flash',
+        model='gemini-3.6-flash',
         contents=["Analyze this image and return the required JSON strictly matching the schema.", image],
         config=types.GenerateContentConfig(
             system_instruction=SYSTEM_INSTRUCTION,
@@ -228,7 +228,7 @@ def chat_endpoint():
             )
             
         response = gemini_client.models.generate_content(
-            model='gemini-2.5-flash',
+            model='gemini-3.6-flash',
             contents=formatted_contents,
             config=types.GenerateContentConfig(
                 system_instruction=CHAT_SYSTEM_INSTRUCTION,
