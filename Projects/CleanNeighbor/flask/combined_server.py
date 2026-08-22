@@ -140,11 +140,11 @@ def predict_issue_endpoint():
         return jsonify({
             'success': True,
             'prediction_type': 'image_issue_detection',
-            'is_issue': prediction.get('is_issue', False),
-            'predicted_class': prediction.get('predicted_class', 'clean'),
-            'confidence': float(prediction.get('confidence', 0.0)),
-            'severity_score': int(prediction.get('severity_score', 0)),
-            'disposal_tutorial': prediction.get('disposal_tutorial', ''),
+            'is_issue': bool(prediction.get('is_issue', False)),
+            'predicted_class': str(prediction.get('predicted_class') or 'clean'),
+            'confidence': float(prediction.get('confidence') or 0.0),
+            'severity_score': int(prediction.get('severity_score') or 0),
+            'disposal_tutorial': str(prediction.get('disposal_tutorial') or ''),
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         })
     except Exception as e:
@@ -178,11 +178,11 @@ def predict_issue_base64():
         return jsonify({
             'success': True,
             'prediction_type': 'image_issue_detection_base64',
-            'is_issue': prediction.get('is_issue', False),
-            'predicted_class': prediction.get('predicted_class', 'clean'),
-            'confidence': float(prediction.get('confidence', 0.0)),
-            'severity_score': int(prediction.get('severity_score', 0)),
-            'disposal_tutorial': prediction.get('disposal_tutorial', ''),
+            'is_issue': bool(prediction.get('is_issue', False)),
+            'predicted_class': str(prediction.get('predicted_class') or 'clean'),
+            'confidence': float(prediction.get('confidence') or 0.0),
+            'severity_score': int(prediction.get('severity_score') or 0),
+            'disposal_tutorial': str(prediction.get('disposal_tutorial') or ''),
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         })
     except Exception as e:
