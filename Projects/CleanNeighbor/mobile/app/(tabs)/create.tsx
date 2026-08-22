@@ -540,7 +540,7 @@ export default function EnhancedReportWastePage() {
             severityScore: 85,
             category: "Recyclable Waste",
             categoryConfidence: 0.95,
-            suggestions: "This looks like a large pile of waste that needs immediate attention. Good job reporting it!"
+            suggestions: "✅ Image successfully verified! This looks like a large pile of waste that needs immediate attention. Good job reporting it."
           };
 
           setFormData((prev) => ({
@@ -548,14 +548,6 @@ export default function EnhancedReportWastePage() {
             category: fakeAiAnalysis.category,
             priority: getPriorityFromScore(fakeAiAnalysis.severityScore),
           }));
-
-          setTimeout(() => {
-            if (Platform.OS === 'web') {
-              window.alert("AI Verification Success\n\nImage successfully verified as a valid waste issue. Severity: High (85/100).");
-            } else {
-              Alert.alert("AI Verification Success", "Image successfully verified as a valid waste issue. Severity: High (85/100).");
-            }
-          }, 300);
 
           // Fix: Properly type the updated media item with fake data
           setMedia((prev) =>
