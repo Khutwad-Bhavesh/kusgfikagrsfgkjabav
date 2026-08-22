@@ -512,32 +512,18 @@ export default function EnhancedReportWastePage() {
               priority: newPriority,
             }));
           } else if (!aiAnalysis.isIssue && aiAnalysis.confidence > 0.6) {
-            if (Platform.OS === 'web') {
-              const keep = window.confirm(`No Civic Issue Detected\n\nOur AI analysis (${Math.round(aiAnalysis.confidence * 100)}% confidence) suggests this ${mediaType} may not show a valid civic issue (e.g. false claim).\n\nClick OK to keep it anyway, or Cancel to remove it.`);
-              if (!keep) {
-                setMedia((prev) => prev.filter((item) => item.uri !== newMedia.uri));
-                return;
+            setMedia((prev) => prev.filter((item) => item.uri !== newMedia.uri));
+            setTimeout(() => {
+              if (Platform.OS === 'web') {
+                window.alert(`Upload Blocked\n\nOur AI analysis (${Math.round(aiAnalysis.confidence * 100)}% confidence) determined this is not a valid waste/garbage issue.`);
+              } else {
+                Alert.alert(
+                  "Upload Blocked",
+                  `Our AI analysis (${Math.round(aiAnalysis.confidence * 100)}% confidence) determined this is not a valid waste/garbage issue. Only garbage-related reports are allowed.`
+                );
               }
-            } else {
-              Alert.alert(
-                "No Civic Issue Detected",
-                `Our AI analysis (${Math.round(aiAnalysis.confidence * 100)}% confidence) suggests this ${mediaType} may not show a valid civic issue (e.g. false claim). Please upload clearer media that shows the problem, or remove this ${mediaType}.`,
-                [
-                  {
-                    text: `Remove ${mediaType}`,
-                    onPress: () => {
-                      setMedia((prev) =>
-                        prev.filter((item) => item.uri !== newMedia.uri)
-                      );
-                    },
-                  },
-                  {
-                    text: `Keep ${mediaType}`,
-                    style: "cancel",
-                  },
-                ]
-              );
-            }
+            }, 100);
+            return;
           }
         }
 
