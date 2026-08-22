@@ -61,6 +61,7 @@ class IssuePrediction(BaseModel):
     is_issue: bool
     predicted_class: str 
     confidence: float
+    severity_score: int
     disposal_tutorial: str 
 
 SYSTEM_INSTRUCTION = """
@@ -69,6 +70,8 @@ Your job is to analyze images uploaded by citizens and determine if they contain
 
 If the image is completely clean, irrelevant (e.g., a selfie, food, random object, inside a house), or DOES NOT CONTAIN GARBAGE/WASTE, you MUST classify it as NOT an issue (is_issue = false).
 Even if it's another civic issue like a pothole, classify it as false. We ONLY want waste/garbage.
+
+You must also provide a 'severity_score' integer from 1 to 100 based on how severe, large, or harmful the waste is (1 = tiny piece of litter, 100 = massive hazardous dump). If it is not an issue, set severity_score to 0.
 
 Strictly return the JSON output as requested.
 """

@@ -39,6 +39,7 @@ interface UploadedMedia {
   aiAnalysis?: {
     isIssue: boolean;
     confidence: number;
+    severityScore?: number;
     category?: string;
     categoryConfidence?: number;
     suggestions?: string;
@@ -73,6 +74,7 @@ interface UploadedMedia {
   aiAnalysis?: {
     isIssue: boolean;
     confidence: number;
+    severityScore?: number;
     category?: string;
     categoryConfidence?: number;
     suggestions?: string;
@@ -358,24 +360,25 @@ export default function EnhancedReportWastePage() {
     }
   };
 
-  // Function to determine priority based on AI confidence
-  const getPriorityFromConfidence = (
-    confidence: number
+  // Function to determine priority based on AI severity score
+  const getPriorityFromScore = (
+    score: number
   ): "low" | "medium" | "high" | "urgent" => {
-    console.log("🎯 AI Confidence received:", confidence);
+    console.log("🎯 AI Severity Score received:", score);
 
-    if (confidence >= 0.1 && confidence <= 0.4) {
+    if (score < 40) {
       console.log("🔽 Setting priority to LOW");
       return "low";
-    } else if (confidence > 0.4 && confidence <= 0.5) {
+    } else if (score < 70) {
       console.log("🔄 Setting priority to MEDIUM");
       return "medium";
-    } else if (confidence > 0.5) {
-      console.log("🔥 Setting priority to HIGH");
+    } else if (score < 90) {
+      console.log("🔼 Setting priority to HIGH");
       return "high";
+    } else {
+      console.log("🚨 Setting priority to URGENT");
+      return "urgent";
     }
-    console.log("⚠️ Using default MEDIUM priority");
-    return "medium"; // default fallback
   };
 
   const analyzeVideoWithAI = async (videoUri: string) => {
@@ -434,6 +437,7 @@ export default function EnhancedReportWastePage() {
       return {
         isIssue: result.is_issue || false,
         confidence: result.confidence || 0,
+        severityScore: result.severity_score || 0,
         category:
           result.predicted_class && result.predicted_class !== "clean"
             ? aiAnalysisService.mapAICategoryToFormCategory(result.predicted_class)
@@ -502,8 +506,8 @@ export default function EnhancedReportWastePage() {
           }
 
           if (aiAnalysis.isIssue && aiAnalysis.category) {
-            const newPriority = getPriorityFromConfidence(
-              aiAnalysis.confidence
+            const newPriority = getPriorityFromScore(
+              aiAnalysis.severityScore || 50
             );
 
             setFormData((prev) => ({
@@ -892,6 +896,33 @@ export default function EnhancedReportWastePage() {
                 </TouchableOpacity>
               )}
             </View>
+            {media.length > 0 && media[0].aiAnalysis && (
+              <View style={styles.aiAnalysisCard}>
+                <View style={styles.aiAnalysisHeader}>
+                  <Ionicons name="sparkles" size={20} color="#8b5cf6" />
+                  <Text style={styles.aiAnalysisTitle}>AI Analysis</Text>
+                </View>
+                <View style={styles.aiAnalysisContent}>
+                  <View style={styles.analysisItem}>
+                    <Text style={styles.analysisLabel}>Suggestions</Text>
+                    <Text style={styles.suggestionsText}>
+                      {media[0].aiAnalysis.suggestions ||
+                        "Our AI analyzed your image to help categorize it and suggest disposal methods."}
+                    </Text>
+                  </View>
+                  {media[0].aiAnalysis.severityScore !== undefined && (
+                    <View style={styles.analysisItem}>
+                      <Text style={styles.analysisLabel}>Severity</Text>
+                      <View style={styles.severityScoreBadge}>
+                        <Text style={styles.severityScoreText}>
+                          {media[0].aiAnalysis.severityScore}/100 Score
+                        </Text>
+                      </View>
+                    </View>
+                  )}
+                </View>
+              </View>
+            )}
           </View>
 
           {/* Category and Priority Section */}
@@ -1598,5 +1629,19 @@ const styles = StyleSheet.create({
     color: "#16a34a",
     fontSize: 16,
     fontWeight: "500",
+  },
+  severityScoreBadge: {
+    backgroundColor: "#ef4444",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    alignSelf: "flex-start",
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  severityScoreText: {
+    color: "#ffffff",
+    fontWeight: "bold",
+    fontSize: 12,
   },
 });

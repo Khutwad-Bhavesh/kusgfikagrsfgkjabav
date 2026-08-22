@@ -36,6 +36,7 @@ interface IssueDetectionResult {
   prediction_type?: string;
   predicted_class?: string;
   confidence?: number;
+  severity_score?: number;
   is_issue?: boolean;
   disposal_tutorial?: string;
   probabilities?: {
