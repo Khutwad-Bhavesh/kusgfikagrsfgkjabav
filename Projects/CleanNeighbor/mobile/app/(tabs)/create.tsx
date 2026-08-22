@@ -417,6 +417,15 @@ export default function EnhancedReportWastePage() {
       const result = await aiAnalysisService.analyzeImage(imageUri);
 
       if (!result.success) {
+        if (result.error && result.error.includes("blocked by safety filters")) {
+          return {
+            isIssue: false,
+            confidence: 1.0,
+            category: undefined,
+            categoryConfidence: 0,
+            suggestions: "Content blocked by safety filters.",
+          };
+        }
         return null;
       }
 
