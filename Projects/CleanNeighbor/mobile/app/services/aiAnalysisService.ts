@@ -577,6 +577,34 @@ export default class AIAnalysisService {
   setServerUrl(url: string): void {
     this.baseUrl = url;
   }
+
+  async chat(messages: Array<{role: string, content: string}>): Promise<string> {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+      const response = await fetch(`${this.baseUrl}/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ messages }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || `Server error: ${response.status}`);
+      }
+
+      return result.reply;
+    } catch (error: any) {
+      console.error("❌ Chat failed:", error);
+      throw new Error(error.message || "Unknown error occurred during chat");
+    }
+  }
 }
 
 // Export singleton instance

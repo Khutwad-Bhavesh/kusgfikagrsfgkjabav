@@ -184,15 +184,68 @@ def predict_issue_base64():
         logger.error(f"Prediction Error: {str(e)}")
         error_msg = str(e).lower()
         if "safety" in error_msg or "blocked" in error_msg or "stopcandidate" in error_msg:
+            # We must return HTTP 200 with success=False, or HTTP 400 with a specific error so the frontend catches it easily
             return jsonify({
-                'success': True,
+                'success': False,
+                'error': 'blocked by safety filters',
                 'prediction_type': 'image_issue_detection_base64',
                 'is_issue': False,
                 'predicted_class': 'blocked',
                 'confidence': 1.0,
-                'disposal_tutorial': 'Content blocked by safety filters.',
-                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            })
+                'disposal_tutorial': 'Content blocked by safety filters.'
+            }), 400
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+CHAT_SYSTEM_INSTRUCTION = """
+You are 'Shuchithvam Assistant', a helpful, friendly, and knowledgeable civic assistant.
+Your goal is to help citizens understand waste management policies, how to report issues, and how to use the Shuchithvam platform.
+- Keep your answers concise and practical.
+- Be polite and encouraging.
+- Do not provide information outside of civic issues, waste management, or the Shuchithvam app.
+"""
+
+@app.route('/chat', methods=['POST'])
+def chat_endpoint():
+    if not gemini_configured:
+        return jsonify({'success': False, 'error': 'Gemini API not configured'}), 500
+        
+    try:
+        data = request.get_json()
+        if not data or 'messages' not in data:
+            return jsonify({'success': False, 'error': 'No messages provided'}), 400
+            
+        messages = data['messages']
+        
+        # Convert frontend messages to Gemini format
+        formatted_contents = []
+        for msg in messages:
+            role = "user" if msg.get("role") == "user" else "model"
+            formatted_contents.append(
+                types.Content(
+                    role=role,
+                    parts=[types.Part.from_text(text=msg.get("content", ""))]
+                )
+            )
+            
+        response = gemini_client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=formatted_contents,
+            config=types.GenerateContentConfig(
+                system_instruction=CHAT_SYSTEM_INSTRUCTION,
+                safety_settings=SAFETY_SETTINGS
+            )
+        )
+        
+        if not response.text:
+            return jsonify({'success': False, 'error': 'Blocked by safety filters'}), 400
+            
+        return jsonify({
+            'success': True,
+            'reply': response.text,
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        })
+    except Exception as e:
+        logger.error(f"Chat Error: {str(e)}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/status')
