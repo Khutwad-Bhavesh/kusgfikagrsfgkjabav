@@ -531,7 +531,7 @@ export default function EnhancedReportWastePage() {
           }
         }
 
-        } else {
+        if (!aiAnalysis) {
           // --- PRESENTATION FALLBACK ---
           // If the API fails due to missing keys or server downtime, simulate a successful analysis
           const fakeAiAnalysis = {
