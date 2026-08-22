@@ -5,17 +5,11 @@
 
 echo "🚀 Starting Android build process with video support..."
 
-# Check if EAS CLI is installed
-if ! command -v eas &> /dev/null; then
-    echo "❌ EAS CLI not found. Installing..."
-    npm install -g @expo/eas-cli
-fi
-
 # Check if you're logged in to Expo
 echo "📱 Checking Expo authentication..."
-eas whoami || {
+npx eas-cli whoami || {
     echo "🔐 Please log in to your Expo account:"
-    eas login
+    npx eas-cli login
 }
 
 echo "🧹 Cleaning previous builds..."
@@ -52,7 +46,10 @@ if (hasCamera && hasImagePicker && !hasVideo) {
 }"
 
 echo "🔨 Building APK for testing with video support..."
-eas build --platform android --profile preview --clear-cache
+# Temporarily initialize a git repository so EAS doesn't scan your entire home directory
+git init > /dev/null 2>&1
+npx eas-cli build --platform android --profile preview --clear-cache
+rm -rf .git
 
 echo "✅ Build complete! Check your Expo dashboard for the download link."
 echo "🔗 Visit: https://expo.dev/accounts/[your-username]/projects/shuchithvam/builds"
