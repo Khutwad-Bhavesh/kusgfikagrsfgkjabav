@@ -35,6 +35,7 @@ interface UploadedMedia {
   type: "image" | "video";
   storageId?: string; // Keep as optional, not null
   uploading: boolean;
+  base64Data?: string;
   aiAnalysis?: {
     isIssue: boolean;
     confidence: number;
@@ -68,6 +69,7 @@ interface UploadedMedia {
   type: "image" | "video";
   storageId?: string;
   uploading: boolean;
+  base64Data?: string;
   aiAnalysis?: {
     isIssue: boolean;
     confidence: number;
@@ -407,14 +409,14 @@ export default function EnhancedReportWastePage() {
       return null;
     }
   };
-  const analyzeImageWithAI = async (imageUri: string) => {
+  const analyzeImageWithAI = async (imageUri: string, base64Data?: string) => {
     if (!serverConnected) {
       console.log("⚠️ Skipping AI analysis - server not connected");
       return null;
     }
 
     try {
-      const result = await aiAnalysisService.analyzeImage(imageUri);
+      const result = await aiAnalysisService.analyzeImage(imageUri, base64Data);
 
       if (!result.success) {
         if (result.error && result.error.includes("blocked by safety filters")) {
@@ -463,6 +465,7 @@ export default function EnhancedReportWastePage() {
         uri: asset.uri,
         type: mediaType,
         uploading: true,
+        base64Data: asset.base64 || undefined,
       };
 
       setMedia((prev) => [...prev, newMedia]);
@@ -475,7 +478,7 @@ export default function EnhancedReportWastePage() {
         // Analyze with AI based on media type
         const aiAnalysis =
           mediaType === "image"
-            ? await analyzeImageWithAI(asset.uri)
+            ? await analyzeImageWithAI(asset.uri, asset.base64 || undefined)
             : await analyzeVideoWithAI(asset.uri);
 
         if (aiAnalysis) {
@@ -579,7 +582,8 @@ export default function EnhancedReportWastePage() {
       mediaTypes: ImagePicker.MediaTypeOptions.All, // Allow both images and videos
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.8,
+      quality: 0.5,
+      base64: true,
       videoMaxDuration: 30, // Limit videos to 30 seconds
     });
     handleMediaSelection(result);
@@ -590,7 +594,8 @@ export default function EnhancedReportWastePage() {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.8,
+      quality: 0.5,
+      base64: true,
     });
     handleMediaSelection(result);
   };
@@ -599,7 +604,7 @@ export default function EnhancedReportWastePage() {
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Videos,
       allowsEditing: true,
-      quality: 0.8,
+      quality: 0.5,
       videoMaxDuration: 30, // Limit videos to 30 seconds
     });
     handleMediaSelection(result);

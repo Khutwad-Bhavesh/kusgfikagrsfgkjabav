@@ -195,9 +195,11 @@ export default class AIAnalysisService {
   /**
    * Analyze image for issue detection
    */
-  async analyzeImage(imageUri: string): Promise<IssueDetectionResult> {
+  async analyzeImage(imageUri: string, base64Data?: string): Promise<IssueDetectionResult> {
     try {
-      const base64Data = await this.imageUriToBase64(imageUri);
+      if (!base64Data) {
+        base64Data = await this.imageUriToBase64(imageUri);
+      }
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), this.timeout);
