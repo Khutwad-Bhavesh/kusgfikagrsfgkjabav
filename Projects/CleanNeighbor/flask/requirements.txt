@@ -4,3 +4,4 @@ gunicorn==23.0.0
 pillow
 psutil
 google-genai>=0.2.0
+pydantic
