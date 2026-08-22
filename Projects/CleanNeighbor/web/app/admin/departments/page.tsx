@@ -256,9 +256,9 @@ export default function DepartmentsPage() {
       await createDepartment({
         name: formData.name.trim(),
         description: formData.description.trim(),
-        headOfDepartment: formData.headOfDepartment.trim() || undefined,
-        contactEmail: formData.contactEmail.trim() || undefined,
-        contactPhone: formData.contactPhone.trim() || undefined,
+        head_of_department: formData.headOfDepartment.trim() || undefined,
+        contact_email: formData.contactEmail.trim() || undefined,
+        contact_phone: formData.contactPhone.trim() || undefined,
       });
 
       toast.success("Department created successfully");
@@ -294,12 +294,12 @@ export default function DepartmentsPage() {
 
     try {
       await updateDepartment({
-        departmentId: editingDepartment._id as any,
+        _id: editingDepartment._id as any,
         name: formData.name.trim(),
         description: formData.description.trim(),
-        headOfDepartment: formData.headOfDepartment.trim() || undefined,
-        contactEmail: formData.contactEmail.trim() || undefined,
-        contactPhone: formData.contactPhone.trim() || undefined,
+        head_of_department: formData.headOfDepartment.trim() || undefined,
+        contact_email: formData.contactEmail.trim() || undefined,
+        contact_phone: formData.contactPhone.trim() || undefined,
       });
 
       toast.success("Department updated successfully");
@@ -328,8 +328,8 @@ export default function DepartmentsPage() {
   const toggleStatus = async (department: Department) => {
     try {
       await updateDepartment({
-        departmentId: department._id as any,
-        isActive: !department.isActive,
+        _id: department._id as any,
+        is_active: !department.isActive,
       });
 
       toast.success(

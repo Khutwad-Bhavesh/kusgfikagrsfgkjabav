@@ -22,13 +22,25 @@ export function useDatabaseQuery(collectionName: string, queryConstraints: any =
         
         if (fetchError) throw fetchError;
         let mappedResult = result;
-        if (result && Array.isArray(result) && collectionName.toLowerCase() === 'wastereports') {
-            mappedResult = result.map(item => ({
-                ...item,
-                priority: item.ai_analysis?.priority || 'medium',
-                createdAt: item.created_at,
-                updatedAt: item.updated_at || item.created_at
-            }));
+        if (result && Array.isArray(result)) {
+            if (collectionName.toLowerCase() === 'wastereports') {
+                mappedResult = result.map(item => ({
+                    ...item,
+                    priority: item.ai_analysis?.priority || 'medium',
+                    createdAt: item.created_at,
+                    updatedAt: item.updated_at || item.created_at
+                }));
+            } else if (collectionName.toLowerCase() === 'departments') {
+                mappedResult = result.map(item => ({
+                    ...item,
+                    headOfDepartment: item.head_of_department,
+                    contactEmail: item.contact_email,
+                    contactPhone: item.contact_phone,
+                    isActive: item.is_active,
+                    createdAt: item.created_at,
+                    updatedAt: item.updated_at || item.created_at
+                }));
+            }
         }
         setData(mappedResult);
       } catch (err: any) {
@@ -78,6 +90,16 @@ export function useDatabaseDoc(collectionName: string, docId?: string) {
             mappedResult = {
                 ...result,
                 priority: result.ai_analysis?.priority || 'medium',
+                createdAt: result.created_at,
+                updatedAt: result.updated_at || result.created_at
+            };
+        } else if (collectionName.toLowerCase() === 'departments') {
+            mappedResult = {
+                ...result,
+                headOfDepartment: result.head_of_department,
+                contactEmail: result.contact_email,
+                contactPhone: result.contact_phone,
+                isActive: result.is_active,
                 createdAt: result.created_at,
                 updatedAt: result.updated_at || result.created_at
             };
